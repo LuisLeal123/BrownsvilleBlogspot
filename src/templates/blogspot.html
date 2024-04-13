@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Top 10 Leaderboard</h1>
+        <table class="table mt-3">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Count</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, count, img_src in top_ten %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ count }}</td>
+                    <td><img src="{{ img_src }}" alt="{{ name }}" style="width:100px; height:auto;"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
