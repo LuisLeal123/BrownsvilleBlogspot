@@ -1,0 +1,22 @@
+/* styles.css */
+.date-info {
+    font-size: 16px;
+    font-weight: bold;  /* Make the font bold */
+    vertical-align: middle;  /* Align text with the middle of the line */
+}
+
+.header-image {
+    height: 150px;
+    vertical-align: middle; /* Align the image with the middle of the text */
+    margin-right: 5px; /* Reduced spacing to match smaller size */
+}
+
+.header-content {
+    display: inline-block; /* Makes elements line up in a row */
+    vertical-align: middle; /* Aligns elements vertically in the middle */
+}
+
+.leaderboard-title {
+    font-size: 72px; /* Increase font size */
+    font-weight: bold; /* Optional: Makes the text bold */
+}
