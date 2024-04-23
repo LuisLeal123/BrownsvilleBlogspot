@@ -1,22 +1,49 @@
 /* styles.css */
+body {
+    background-image: linear-gradient(to right, #b8e994, #ffffff, #ff9a9e); /* A gentle gradient from light green to white to light red */
+    background-repeat: no-repeat; /* Ensure the gradient does not repeat */
+    background-attachment: fixed; /* Optional: keeps the gradient fixed during scrolling */
+    background-size: cover; /* Ensures the gradient covers the entire body */
+}
+
 .date-info {
     font-size: 16px;
-    font-weight: bold;  /* Make the font bold */
-    vertical-align: middle;  /* Align text with the middle of the line */
+    font-weight: bold;
+    vertical-align: bottom;
+    position: relative;
+    bottom: 11px;
 }
 
 .header-image {
     height: 150px;
-    vertical-align: middle; /* Align the image with the middle of the text */
+    vertical-align: bottom;
     margin-right: 5px; /* Reduced spacing to match smaller size */
 }
 
 .header-content {
-    display: inline-block; /* Makes elements line up in a row */
-    vertical-align: middle; /* Aligns elements vertically in the middle */
+    display: inline;
+    vertical-align: bottom;
 }
 
 .leaderboard-title {
-    font-size: 72px; /* Increase font size */
-    font-weight: bold; /* Optional: Makes the text bold */
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.sidebar {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+input[type="text"], button {
+    width: 100%;
+}
+#searchRank{
+    margin-top: 170px
+}
+
+#nameRank {
+    margin-top: 40px; /* Space it nicely below the previous elements */
 }

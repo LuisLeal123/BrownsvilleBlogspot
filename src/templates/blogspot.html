@@ -4,30 +4,64 @@
     <meta charset="UTF-8">
     <title>Leaderboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Top 10 Leaderboard</h1>
-        <table class="table mt-3">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Rank</th>
-                    <th>Name</th>
-                    <th>Count</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for name, count, img_src in top_ten %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ name }}</td>
-                    <td>{{ count }}</td>
-                    <td><img src="{{ img_src }}" alt="{{ name }}" style="width:100px; height:auto;"></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <!-- Start of the main row -->
+        <div class="row justify-content-center">
+            <!-- Main content column -->
+            <div class="col-md-8">
+                <img src="/static/images/logo.png" alt="Icon" class="header-image header-content">
+                <h1 class="header-content leaderboard-title">Top 10 Leaderboard </h1>
+                <table class="table mt-3">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Times Arrested</th>
+                            <th>Total Counts</th>
+                            <th>Last Mugshot</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, count, ranks, totalCounts, img_src in top_ten %}
+                        <tr>
+                            <td>{{ ranks }}</td>
+                            <td>{{ name }}</td>
+                            <td>{{ count }}</td>
+                            <td>{{ totalCounts }}</td>
+                            <td><img src="{{ img_src }}" alt="{{ name }}" style="width:100px; height:auto;"></td>
+                            <td>
+                                {% if ranks == 1 %}
+                                    <img src="{{ url_for('static', filename='images/Gold_Medal.jpeg') }}" alt="Gold Medal" style="width:150px; height:150px;">
+                                {% endif %}
+                                {% if ranks == 2 %}
+                                    <img src="{{ url_for('static', filename='images/Silver_Medal.jpg') }}" alt="Silver Medal" style="width:150px; height:150px;">
+                                {% endif %}
+                                {% if ranks == 3 %}
+                                    <img src="{{ url_for('static', filename='images/Bronze_medal.jpg') }}" alt="Bronze Medal" style="width:150px; height:150px;">
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Sidebar column -->
+            <div class="col-md-4" id = "searchRank">
+                <div class="sidebar">
+                    <p><strong>Current leaderboards as of {{ earliest_date }}</strong>. Select a new date to update rankings:</p>
+                    <input type="date" id="dateInput" class="form-control" min = "2010-12-31" max = todays_date>
+                </div>
+                <div class="sidebar" id = "nameRank">
+                    <p>Want to know where your name ranks all-time? Type it in the text box below!</p>
+                    <input type="text" id="nameInput" placeholder="Enter your name" class="form-control">
+                    <button onclick="findRank()" class="btn btn-primary mt-2">Check Rank</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
