@@ -77,36 +77,34 @@ def leaderboard():
     Returns:
         none
     """
-    earliest_date = datetime.max  # Initialize with the maximum date possible
-    url = "https://brownsvillepd.blogspot.com/"
+
+    # Set up the iterator, URL, date and dictionaries
+    i = 0
+    max_search = 10
     names_dict = {}
     image_links = {}
-    totalCounts = {}
+    total_counts = {}
+    earliest_date = datetime.max
+    url = "https://brownsvillepd.blogspot.com/"
 
-    i = 0
-    maxSearch = 10
-    while i < maxSearch:
+    # Search each page
+    while i < max_search:
         i += 1
         page = requests.get(url)
         soup = BeautifulSoup(page.text, 'html.parser')
+        blog_posts = soup.select_one("#Blog1 > div.blog-posts.hfeed")
 
-        # find the date
-        if i == maxSearch - 1:
+        # Extract the farthest possible date from the page
+        if i > max_search - 2:
             for x in list(range(10)):
-                # selector = f'#Blog1 > div.blog-posts.hfeed > div:nth-child({x}) > h2 > span'
-                date_tag = soup.select_one('#Blog1 > div.blog-posts.hfeed > div:nth-child(2) > h2 > span')
+                date_tag = soup.select_one(f'#Blog1 > div.blog-posts.hfeed > div:nth-child({x}) > h2 > span')
                 if not date_tag:
                     break
-                try:
+                else:
                     current_date = datetime.strptime(date_tag.text.strip(), '%A, %B %d, %Y')
                     if current_date < earliest_date:
                         earliest_date = current_date
-                    x += 1
-                    print
-                except ValueError as e:
-                    print("could not find")
-                x += 1
-        # Find all posts, then process each one individually
+
         felony_misdemeanor_types = {
             "state jail felony": 1,
             "class a misdemeanor": 1,
@@ -116,14 +114,16 @@ def leaderboard():
             "2nd degree felony": 1,
             "1st degree felony": 1
         }
+
+        # Find all posts, then process each one individually
         posts = soup.find_all(lambda tag: tag.name == 'div' and tag.get('id') and tag['id'].startswith('post-body-'))
         for post in posts:
             name_tag = post.select_one('p:nth-child(1) > span > b')
             if name_tag:
                 name = name_tag.text.strip().lower()
                 name = extract_name(name).title()
-                if name not in totalCounts:
-                    totalCounts[name] = 0
+                if name not in total_counts:
+                    total_counts[name] = 0
 
                 if name in names_dict:
                     names_dict[name] += 1
@@ -142,11 +142,12 @@ def leaderboard():
                         # Check for specific counts
                         counts_found = re.search(r'(\d+) counts', charge_text)
                         if counts_found:
-                            countSum = int(counts_found.group(1))
-                            totalCounts[name] += countSum
+                            count_sum = int(counts_found.group(1))
+                            total_counts[name] += count_sum
                         else:
-                            totalCounts[name] += 1
+                            total_counts[name] += 1
 
+        # Attempt to find the next link
         next_link = soup.find('a', id='Blog1_blog-pager-older-link')
         if next_link:
             url = next_link['href']
@@ -154,12 +155,14 @@ def leaderboard():
             break
 
     # Sort names by frequency
-    sorted_names = sorted(names_dict.items(), key=lambda item: (item[1], totalCounts.get(item[0], 0)), reverse=True)
+    sorted_names = sorted(names_dict.items(), key=lambda item: (item[1], total_counts.get(item[0], 0)), reverse=True)
     top_ten = sorted_names[:10]
+
     # fix the ranks
-    ranked_names = calculate_dense_rank(sorted_names, totalCounts)
+    ranked_names = calculate_dense_rank(sorted_names, total_counts)
+
     # Prepare data for the template
-    top_ten_data = [(name, count, ranked_names.get(name, ''), totalCounts.get(name, 0), image_links.get(name, '')) for
+    top_ten_data = [(name, count, ranked_names.get(name, ''), total_counts.get(name, 0), image_links.get(name, '')) for
                     name, count in top_ten]
 
     today_date = datetime.now().strftime("%Y-%m-%d")
