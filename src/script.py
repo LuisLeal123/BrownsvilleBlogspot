@@ -80,12 +80,13 @@ def leaderboard():
 
     # Set up the iterator, URL, date and dictionaries
     i = 0
-    max_search = 10
+    max_search = 5
     names_dict = {}
     image_links = {}
     total_counts = {}
-    earliest_date = datetime.max
     url = "https://brownsvillepd.blogspot.com/"
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    earliest_date = datetime.now().strftime("%Y-%m-%d")
 
     # Search each page
     while i < max_search:
@@ -165,9 +166,7 @@ def leaderboard():
     top_ten_data = [(name, count, ranked_names.get(name, ''), total_counts.get(name, 0), image_links.get(name, '')) for
                     name, count in top_ten]
 
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    formatted_date = earliest_date.strftime('%Y-%m-%d')
-    return render_template('blogspot.html', top_ten=top_ten_data, earliest_date=formatted_date, todays_date=today_date)
+    return render_template('blogspot.html', top_ten=top_ten_data, earliest_date=earliest_date, todays_date=today_date)
 
 
 if __name__ == '__main__':

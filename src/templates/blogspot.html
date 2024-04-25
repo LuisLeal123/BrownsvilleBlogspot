@@ -51,14 +51,20 @@
             </div>
             <!-- Sidebar column -->
             <div class="col-md-4" id = "searchRank">
-                <div class="sidebar">
+                <div class="sidebar-first">
                     <p><strong>Current leaderboards as of {{ earliest_date }}</strong>. Select a new date to update rankings:</p>
                     <input type="date" id="dateInput" class="form-control" min = "2010-12-31" max = todays_date>
                 </div>
-                <div class="sidebar" id = "nameRank">
+                <div class="sidebar-second">
                     <p>Want to know where your name ranks all-time? Type it in the text box below!</p>
-                    <input type="text" id="nameInput" placeholder="Enter your name" class="form-control">
+                    <input type="text" placeholder="Enter your name" class="form-control">
                     <button onclick="findRank()" class="btn btn-primary mt-2">Check Rank</button>
+                </div>
+                <div class="sidebar-game">
+                    <h2>Feeling lucky?</h2>
+                    <p>Match the arrestee with the alleged crime:</p>
+                    <button onclick="location.href='todays-game.html';">Play Today's Game</button>
+                    <button onclick="location.href='random-game.html';">Play Randomized Game</button>
                 </div>
             </div>
         </div>

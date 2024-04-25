@@ -30,20 +30,57 @@ body {
     font-weight: bold;
 }
 
-.sidebar {
+.sidebar-first {
+    margin-top: 170px;
+    position: fixed; /* Key property to make the sidebar fixed */
+    overflow-y: auto; /* Allows scrolling inside the sidebar if content overflows */
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+    width: 350px;
+}
+
+.sidebar-second{
+    margin-top: 325px;
+    position: fixed; /* Key property to make the sidebar fixed */
+    overflow-y: auto; /* Allows scrolling inside the sidebar if content overflows */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 350px;
+}
 
 input[type="text"], button {
     width: 100%;
 }
-#searchRank{
-    margin-top: 170px
+.sidebar-game {
+    margin-top: 525px;
+    position: fixed;
+    width: 350px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: -4px 0 8px rgba(0,0,0,0.1);
+    border-radius: 5px;
 }
 
-#nameRank {
-    margin-top: 40px; /* Space it nicely below the previous elements */
+.sidebar-game h2 {
+    color: #333;
+    font-size: 20px;
+}
+
+.sidebar-game button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.sidebar-game button:hover {
+    background-color: #45a049;
 }
