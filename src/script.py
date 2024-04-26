@@ -64,7 +64,6 @@ def extract_name(text):
             return name.strip()
     return text.strip()  # Return the whole text if no delimiter is found
 
-
 @app.route('/')
 @cache.cached(timeout=600)  # Cache this view for 10 minutes
 def leaderboard():
@@ -81,7 +80,7 @@ def leaderboard():
     # Set up the iterator, URL, date and dictionaries
     i = 0
     max_search = 5
-    names_dict = {}
+    total_arrests = {}
     image_links = {}
     total_counts = {}
     url = "https://brownsvillepd.blogspot.com/"
@@ -93,28 +92,17 @@ def leaderboard():
         i += 1
         page = requests.get(url)
         soup = BeautifulSoup(page.text, 'html.parser')
-        blog_posts = soup.select_one("#Blog1 > div.blog-posts.hfeed")
 
         # Extract the farthest possible date from the page
         if i > max_search - 2:
-            for x in list(range(10)):
+            for x in list(range(1, 50)):
                 date_tag = soup.select_one(f'#Blog1 > div.blog-posts.hfeed > div:nth-child({x}) > h2 > span')
                 if not date_tag:
                     break
                 else:
-                    current_date = datetime.strptime(date_tag.text.strip(), '%A, %B %d, %Y')
+                    current_date = datetime.strptime(date_tag.text, '%A, %B %d, %Y').strftime('%Y-%m-%d')
                     if current_date < earliest_date:
                         earliest_date = current_date
-
-        felony_misdemeanor_types = {
-            "state jail felony": 1,
-            "class a misdemeanor": 1,
-            "class b misdemeanor": 1,
-            "class c misdemeanor": 1,
-            "3rd degree felony": 1,
-            "2nd degree felony": 1,
-            "1st degree felony": 1
-        }
 
         # Find all posts, then process each one individually
         posts = soup.find_all(lambda tag: tag.name == 'div' and tag.get('id') and tag['id'].startswith('post-body-'))
@@ -126,10 +114,10 @@ def leaderboard():
                 if name not in total_counts:
                     total_counts[name] = 0
 
-                if name in names_dict:
-                    names_dict[name] += 1
+                if name in total_arrests:
+                    total_arrests[name] += 1
                 else:
-                    names_dict[name] = 1
+                    total_arrests[name] = 1
 
                 # Use the specific ID of the post to build the image selector
                 image_tag = post.select_one('div.separator > a > img')
@@ -155,11 +143,9 @@ def leaderboard():
         else:
             break
 
-    # Sort names by frequency
-    sorted_names = sorted(names_dict.items(), key=lambda item: (item[1], total_counts.get(item[0], 0)), reverse=True)
+    # Sort names by counts & charges, then assign a rank # to the top 10
+    sorted_names = sorted(total_arrests.items(), key=lambda item: (item[1], total_counts.get(item[0], 0)), reverse=True)
     top_ten = sorted_names[:10]
-
-    # fix the ranks
     ranked_names = calculate_dense_rank(sorted_names, total_counts)
 
     # Prepare data for the template
@@ -169,5 +155,19 @@ def leaderboard():
     return render_template('blogspot.html', top_ten=top_ten_data, earliest_date=earliest_date, todays_date=today_date)
 
 
+@app.route('/todays-game')
+def todays_game():
+    # Logic to generate today's game data
+    # You can pass in relevant data to the game page as needed
+    return render_template('todays-game.html')
+
+
+@app.route('/random-game')
+def random_game():
+    # Logic to generate a random game from historical data
+    # You might want to randomize the selection of criminals and crimes here
+    return render_template('random-game.html')
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=4999)
+    app.run(host='0.0.0.0', debug=True, port=4999)
