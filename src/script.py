@@ -176,8 +176,9 @@ def leaderboard():
 
 @app.route('/api/random-game-data')
 def random_batch():
-    print("test")
-    return [random.choice(full_games_list), random.choice(full_games_list), random.choice(full_games_list)]
+    output = [random.choice(full_games_list), random.choice(full_games_list), random.choice(full_games_list)]
+    print(output)
+    return output
 
 
 @app.route('/todays-game')

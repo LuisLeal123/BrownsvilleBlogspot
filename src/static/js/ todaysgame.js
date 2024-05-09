@@ -1,6 +1,5 @@
 function refreshGame() {
-    console.log("refreshgame");
-    
+    alert("refreshgame");
 }
 
 //window.onload = refreshGame;

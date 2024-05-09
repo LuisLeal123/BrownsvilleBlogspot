@@ -3,25 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Today's Game</title>
-    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
 </head>
 <body>
     <div id="gameContainer">
         <button onclick="refreshGame()">Refresh game</button>
-        <div id="images"></div>
-        <div id="chargeSlots"></div>
-        <div id="charges"></div>
+        <div id="images">
+            <!-- Images -->
+        </div>
+        <div id="chargeSlots">
+            <!-- Charge slots -->
+        </div>
+        <div id="charges">
+            <!-- Charges -->
+        </div>
         <button onclick="checkAnswers()">Done</button>
         <div id="result"></div>
     </div>
     <script>
-        function refreshGame() {
-            alert("Refresh game button clicked.");  
-        }
+    function refreshGame() {
+        fetch('/api/random-game-data')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received data:", data);  // Ensure the data is as expected
+
+                // Clear existing content
+                const imagesContainer = document.getElementById('images');
+                const chargesContainer = document.getElementById('charges');
+                imagesContainer.innerHTML = '';
+                chargesContainer.innerHTML = '';
+
+                // Iterate over each profile received
+                data.forEach(person => {
+                    let img = document.createElement('img');                 // Create an image element
+                    img.src = person[1];                                     // Set the source of the image
+                    img.alt = "Mugshot of " + person[0];                     // Set the alt text
+                    img.style.width = '200px'; // Set a fixed width
+                    img.style.height = '200px'; // Set a fixed height
+                    imagesContainer.appendChild(img);                        // Append the image to the 'images' div
+
+                    person[2].forEach(charge => {                            // person[2] is the array of charges
+                        let div = document.createElement('div');             // Create a div for each charge
+                        div.textContent = charge;                            // Set the text of the div
+                        chargesContainer.appendChild(div);                   // Append the div to the 'charges' div
+                    });
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
         function checkAnswers() {
-            alert("Check answers button clicked."); 
+            
         }
-    </script>
+    </script> 
 </body>
 </html>
 
