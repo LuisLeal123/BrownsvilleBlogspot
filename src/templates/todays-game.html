@@ -6,7 +6,22 @@
     <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
-    <h1>Match the Criminal with the Crime - Today's Game</h1>
-    <p>Here you can play the game using today's data. Try to match each criminal with the correct crime they committed.</p>
+    <div id="gameContainer">
+        <button onclick="refreshGame()">Refresh game</button>
+        <div id="images"></div>
+        <div id="chargeSlots"></div>
+        <div id="charges"></div>
+        <button onclick="checkAnswers()">Done</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        function refreshGame() {
+            alert("Refresh game button clicked.");  
+        }
+        function checkAnswers() {
+            alert("Check answers button clicked."); 
+        }
+    </script>
 </body>
 </html>
+

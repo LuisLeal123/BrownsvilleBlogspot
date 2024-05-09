@@ -84,3 +84,25 @@ input[type="text"], button {
 .sidebar-game button:hover {
     background-color: #45a049;
 }
+
+#gameContainer {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+#images img {
+    width: 30%;
+    margin: 1%;
+}
+.charge, .chargeSlot {
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin: 5px;
+    background-color: #f9f9f9;
+}
+.charge {
+    cursor: grab;
+}
+.chargeSlot {
+    min-height: 50px;
+}

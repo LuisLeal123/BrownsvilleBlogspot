@@ -4,9 +4,21 @@ from flask import Flask, render_template
 from flask_caching import Cache
 from datetime import datetime
 import re
+import random
 
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+# Found in counts
+counts_keywords = {"disorderly", "conduct", "class", "c", "misdemeanor", "public", "intoxication", "traffic",
+                   "violation", "assault", "(", ")", "a", "(fv)", "robbery", "2nd", "1st", "3rd", "degree",
+                   "felony", "of", "state", "jail", "engaging", "in", "organized", "criminal", "activity",
+                   "motor", "organized", "criminal", "mischief", "resisting", "theft", "transportation",
+                   "marijuana", "possession", "burglary", "conviction", "convictions", "previous", "arrest",
+                   "controlled", "subStance", "pg", "3"}
+
+# a list of all charges and names
+full_games_list = []
 
 
 def calculate_dense_rank(sorted_names, total_counts):
@@ -64,6 +76,7 @@ def extract_name(text):
             return name.strip()
     return text.strip()  # Return the whole text if no delimiter is found
 
+
 @app.route('/')
 @cache.cached(timeout=600)  # Cache this view for 10 minutes
 def leaderboard():
@@ -77,12 +90,15 @@ def leaderboard():
         none
     """
 
+    # This function will be converted to a scraper and saver, will be queued for use by the other functions.
+
     # Set up the iterator, URL, date and dictionaries
     i = 0
-    max_search = 5
+    max_search = 1
     total_arrests = {}
     image_links = {}
     total_counts = {}
+    full_games_size = 0
     url = "https://brownsvillepd.blogspot.com/"
     today_date = datetime.now().strftime("%Y-%m-%d")
     earliest_date = datetime.now().strftime("%Y-%m-%d")
@@ -124,10 +140,12 @@ def leaderboard():
                 if image_tag:
                     image_links[name] = image_tag['src']
                 # Iterate through possible charge descriptions
+                charges = []
                 for p_index in range(2, 7):  # Adjust range as necessary
                     charge_tag = post.select_one(f'p:nth-child({p_index}) > span > b')
                     if charge_tag:
                         charge_text = charge_tag.text.lower()
+                        charges.append(charge_text)
                         # Check for specific counts
                         counts_found = re.search(r'(\d+) counts', charge_text)
                         if counts_found:
@@ -135,6 +153,8 @@ def leaderboard():
                             total_counts[name] += count_sum
                         else:
                             total_counts[name] += 1
+                if image_tag and name_tag:
+                    full_games_list.append([name, image_tag['src'], charges])
 
         # Attempt to find the next link
         next_link = soup.find('a', id='Blog1_blog-pager-older-link')
@@ -151,15 +171,20 @@ def leaderboard():
     # Prepare data for the template
     top_ten_data = [(name, count, ranked_names.get(name, ''), total_counts.get(name, 0), image_links.get(name, '')) for
                     name, count in top_ten]
-
+    print(full_games_list)
     return render_template('blogspot.html', top_ten=top_ten_data, earliest_date=earliest_date, todays_date=today_date)
+
+@app.route('/api/random-game-data')
+def random_batch():
+    print("test")
+    return [random.choice(full_games_list), random.choice(full_games_list), random.choice(full_games_list)]
 
 
 @app.route('/todays-game')
 def todays_game():
-    # Logic to generate today's game data
-    # You can pass in relevant data to the game page as needed
-    return render_template('todays-game.html')
+    # generate 3 random numbers from 1 to the size and pick those. (logic will need to be moved to an event listener)
+
+    return render_template('todays-game.html', full_games_list=full_games_list, todays_game_data=random_batch());
 
 
 @app.route('/random-game')
